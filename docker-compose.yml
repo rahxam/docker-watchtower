@@ -1,0 +1,36 @@
+services:
+ watchtower:
+   image: containrrr/watchtower
+   volumes:
+     - "/var/run/docker.sock:/var/run/docker.sock"
+     - /etc/localtime:/etc/localtime:ro
+   networks:
+     - traefik
+   deploy:
+     labels:
+        traefik.enable: "true"
+        traefik.http.routers.watchtower.entryPoints: https
+        traefik.http.routers.watchtower.rule: Host(`watchtower.hartig.es`)
+        traefik.http.routers.watchtower.tls: "true"
+        traefik.http.services.watchtower.loadbalancer.server.port: 8080
+        traefik.swarm.network: traefik
+     placement:
+       constraints: [node.role == manager]
+   environment:
+      WATCHTOWER_HTTP_API_METRICS: 'true'
+      WATCHTOWER_HTTP_API_TOKEN: hjdshjdszuzudfdfskjdfsnnfdsdsfzudszufdsfnfdsk
+      WATCHTOWER_MONITOR_ONLY: 'true'
+      WATCHTOWER_NOTIFICATIONS: email
+      WATCHTOWER_NOTIFICATION_EMAIL_FROM: paperniffler@gmail.com
+      WATCHTOWER_NOTIFICATION_EMAIL_TO: hartigmaximilian@gmail.com
+      # you have to use a network alias here, if you use your own certificate
+      WATCHTOWER_NOTIFICATION_EMAIL_SERVER: smtp.gmail.com
+      WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT: 587
+      WATCHTOWER_NOTIFICATION_EMAIL_DELAY: 2
+      WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD: cmdj ccrz hgkj npws
+      WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER: paperniffler@gmail.com
+    
+
+networks:
+  traefik:
+    external: true
